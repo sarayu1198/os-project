@@ -43,54 +43,53 @@ sudo rmmod monitor
 
 ## 3. Demo with Screenshots
 
+## 3. Demo with Screenshots
+
 ### 1. Multi-container supervision
-![Multi-container](5ee0ef77-7981-49fc-8a51-0a7322662e7d.JPG)  
-*Two containers (alpha, beta) running under one supervisor.*
+![Multi-container](screenshots/multi_container.jpg)  
+Two containers (alpha, beta) running under one supervisor.
 
 ---
 
 ### 2. Metadata tracking
-![Metadata](9a13a3ff-e538-4712-9dd2-a2436320b3ef.JPG)  
-*Output of engine ps showing container IDs, PIDs, and states.*
+![Metadata](screenshots/metadata.jpg)  
+Output of engine ps showing container IDs, PIDs, and states.
 
 ---
 
 ### 3. Bounded-buffer logging
-![Logging](51c06d5f-8ef8-4d03-9b03-ce36d0caadd3.JPG)  
-*Logs retrieved showing pipeline activity.*
+![Logging](screenshots/logging.jpg)  
+Logs retrieved showing pipeline activity.
 
 ---
 
 ### 4. CLI and IPC
-![CLI](89cb82f9-55d6-4748-b556-baaaed97c30d.JPG)  
-*CLI commands interacting with supervisor.*
+![CLI](screenshots/cli.jpg)  
+CLI commands interacting with supervisor process.
 
 ---
 
 ### 5. Soft-limit warning
-![Soft Limit](775f337e-3cbd-4b8f-bad7-f88149b9714a.JPG)  
-*dmesg showing soft limit warning.*
+![Soft Limit](screenshots/soft_limit.jpg)  
+dmesg showing soft limit warning.
 
 ---
 
 ### 6. Hard-limit enforcement
-![Hard Limit](807dd6d1-072c-44b6-92a0-e96ed97dc7bb.JPG)  
-*dmesg showing container killed after exceeding limit.*
+![Hard Limit](screenshots/hard_limit.jpg)  
+dmesg showing container killed after exceeding limit.
 
 ---
 
 ### 7. Scheduling experiment
-![Scheduling](1142e011-4529-44b0-85ec-dd99ee7e16e1.JPG)  
-*CPU vs I/O workload behavior observed via top.*
+![Scheduling](screenshots/scheduling.jpg)  
+CPU vs I/O workload behavior observed via top.
 
 ---
 
 ### 8. Clean teardown
-![Teardown](6757e71d-8648-4781-8838-dfaf19d6cd82.JPG)  
-*All containers stopped, no zombie processes.*
-
----
-
+![Teardown](screenshots/teardown.jpg)  
+Containers stopped and no zombies remain.
 ## 4. Engineering Analysis
 
 1. Isolation Mechanisms
