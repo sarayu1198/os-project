@@ -41,7 +41,6 @@ sudo rmmod monitor
 
 ---
 
-## 3. Demo with Screenshots
 
 ## 3. Demo with Screenshots
 
