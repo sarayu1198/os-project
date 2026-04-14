@@ -89,6 +89,7 @@ CPU vs I/O workload behavior observed via top.
 ### 8. Clean teardown
 ![Teardown](screenshots/teardown.jpg)  
 Containers stopped and no zombies remain.
+
 ## 4. Engineering Analysis
 
 1. Isolation Mechanisms
@@ -102,6 +103,7 @@ Kernel memory and scheduler are shared
 System calls are handled by the same kernel
 Resource contention (CPU, memory) still exists
 This reflects the core design of containers: lightweight isolation without full virtualization.
+
 2. Supervisor and Process Lifecycle
 A long-running supervisor process is critical because it acts as the parent for all containers.
 Containers are created using fork() and exec(), making them child processes of the supervisor.
@@ -109,9 +111,9 @@ The supervisor tracks metadata such as container ID, PID, and state.
 When a container exits, the supervisor performs reaping using wait() to prevent zombie processes.
 Signals (e.g., stop commands) are routed through the supervisor to manage container lifecycle.
 This mirrors how init systems (like systemd) manage processes in Linux, ensuring controlled lifecycle and cleanup.
+
 3. IPC, Threads, and Synchronization
-The system uses IPC mechanisms between:
-CLI ↔ Supervisor
+The design supports IPC between CLI and supervisor, though the current implementation uses direct function calls for simplicity.
 Kernel module ↔ user space
 The logging system implements a bounded buffer (producer-consumer model):
 Producers: containers generating logs
@@ -126,10 +128,11 @@ This ensures:
 No data corruption
 No buffer overflow
 Efficient synchronization
+
 4. Memory Management and Enforcement
 Memory usage is tracked using RSS (Resident Set Size):
 Measures actual physical memory used by a process
-Does NOT include swapped-out pages or shared memory accurately
+RSS measures physical memory used but does not fully account for shared memory.
 Two limits are enforced:
 Soft limit → warning threshold
 Allows flexibility and observation before enforcement
@@ -140,6 +143,7 @@ Only the kernel has accurate, real-time memory information
 User-space enforcement can be bypassed or delayed
 Kernel ensures immediate and reliable control
 This reflects how real systems enforce limits (e.g., cgroups).
+
 5. Scheduling Behavior
 The scheduling experiment compared:
 cpu_hog (CPU-bound)
@@ -162,11 +166,12 @@ This demonstrates how scheduling adapts based on workload type.
 
 1. Namespace Isolation
 Design Choice:
-Used Linux namespaces (PID, UTS, mount) along with separate root filesystems (rootfs-alpha, rootfs-beta) to isolate containers.
+The runtime achieves partial isolation using chroot for filesystem separation. Namespace-based isolation can be extended using clone with appropriate flags.
 Tradeoff:
 Namespaces provide isolation but do not offer full security like virtual machines, since the kernel is still shared.
 Justification:
 This approach is lightweight and efficient, which aligns with the goal of containers: fast startup and low overhead compared to full virtualization.
+
 2. Supervisor Architecture
 Design Choice:
 Implemented a single long-running supervisor process to manage all containers.
@@ -174,13 +179,15 @@ Tradeoff:
 The supervisor becomes a single point of failure — if it crashes, all container management is lost.
 Justification:
 Centralized control simplifies lifecycle management (start, stop, tracking, cleanup) and ensures proper handling of child processes and zombies.
-3. IPC and Logging System
+
+3. Logging System
 Design Choice:
-Used IPC mechanisms (CLI ↔ supervisor communication) and implemented a bounded-buffer logging system using producer-consumer design.
+Implemented a bounded-buffer logging system using producer-consumer design.
 Tradeoff:
 The bounded buffer may drop logs under high load if producers outpace the consumer.
 Justification:
 Preventing unbounded memory growth is more important than guaranteeing all logs, ensuring system stability.
+
 4. Kernel Monitor (Memory Tracking)
 Design Choice:
 Implemented memory monitoring in a kernel module to track RSS and enforce limits.
@@ -188,6 +195,7 @@ Tradeoff:
 Kernel development is more complex and harder to debug compared to user-space solutions.
 Justification:
 The kernel provides accurate and real-time memory data, making enforcement reliable and impossible for user processes to bypass.
+
 5. Scheduling Experiments
 Design Choice:
 Used synthetic workloads (cpu_hog, io_pulse) to observe scheduler behavior.
