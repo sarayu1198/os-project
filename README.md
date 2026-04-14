@@ -69,7 +69,7 @@ CLI commands interacting with supervisor process.
 ---
 
 ### 5. Soft-limit warning
-![Soft Limit](screenshots/soft_limit.jpg)  
+![Soft Limit](screenshots/hard_limit.jpg)  
 dmesg showing soft limit warning.
 
 ---
