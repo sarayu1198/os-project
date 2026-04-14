@@ -45,7 +45,7 @@ sudo rmmod monitor
 ## 3. Demo with Screenshots
 
 ### 1. Multi-container supervision
-![Multi-container](screenshots/multi_container.jpg)  
+![Multi-container](screenshots/metadata.jpg)  
 Two containers (alpha, beta) running under one supervisor.
 
 ---
